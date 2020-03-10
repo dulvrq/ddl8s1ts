@@ -19,8 +19,8 @@
 #' @param ls_l8 a file list of Landsat 8 with 6 bands. All files should have the same extent.
 #' @param ls_s1 a file list of Sentinel-1 with 2 bands (VV and VH, in this order). If this is used with Landsat,
 #' all files should have the same extent as Landsat (i.e. same origin, crs and resolution)
-#' @param l8_doys a list of julian date of Landsat 8 (numeric). This should be the same order and length as \code{ls_l8}.
-#' @param s1_doys a list of julian date of Sentinel-1 (numeric). This should be the same order and length as \code{ls_s1}.
+#' @param l8_doys a list of julian day of Landsat 8 (numeric). This should be the same order and length as \code{ls_l8}.
+#' @param s1_doys a list of julian day of Sentinel-1 (numeric). This should be the same order and length as \code{ls_s1}.
 #' @param dt_ref a dataframe of reference data for RF. This should contain column 'x', 'y', and 'date'. x and y should
 #' indicate locations in the same crs as Landsat or Sentinel. 'date' should indicate the timing of disturbance.
 #' If there is no disturbance at that location, use NA.
@@ -29,8 +29,8 @@
 #' @param dir_save a directory for save the results.
 #' @param VI names of spectral index used for Landsat.
 #' @param rf_model a list of two RF models (as list) to skip RF model. Set NULL to build RF model.
-#' @param startDOY a julian date of the initial timing of disturbance detection (e.g. 2016-02-01 should be 2016.08767)
-#' @param endDOY a julian date of the terminate day of disturbance detection.
+#' @param startDOY a julian day of the initial timing of disturbance detection (e.g. 2016-02-01 should be 2016.08767)
+#' @param endDOY a julian day of the terminate day of disturbance detection.
 #' @param mmu numeric. minimum mapping unit (pixel) for final maps. New tif image will be additionally generated.
 #' @param only_rf logical. If TRUE, only build RF models. If FALSE, build RF models and map disturbance detection.
 #'

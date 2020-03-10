@@ -12,8 +12,8 @@ rmse <- function(x, y) sqrt(mean((x-y)^2, na.rm = T))
 #'
 #' @param doy a list of julain date
 #' @param val values corresponding to \code{doy}.
-#' @param fit NULL or julian dates to be fit. This change return of the function.
-#' @param period A maximum julian date to limit fitting (optional). Use NULL to ignore.
+#' @param fit NULL or julian days to be fit. This change return of the function.
+#' @param period A maximum julian day to limit fitting (optional). Use NULL to ignore.
 #' @return If fit = NULL, coefficients of RIRLS implementation. Otherwise fitted values using coefficients.
 #'
 #'

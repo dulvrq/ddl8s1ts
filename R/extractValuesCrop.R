@@ -2,7 +2,7 @@
 #' Extract values from raster and crop by extent
 #'
 #' @param ls_l8 a file list of Landsat 8 or Sentinel-1. All files should have the same extent.
-#' @param l8_doys a list of julian date of Landsat 8 or Sentinel-1 (numeric).
+#' @param l8_doys a list of julian day of Landsat 8 or Sentinel-1 (numeric).
 #' This should be the same order and length as \code{ls_l8}.
 #' @param e1 an extent of cropping.
 #' @param col_names names of bands. If L8, this should be B2, B3...B7. If S1, this should be VV and VH.

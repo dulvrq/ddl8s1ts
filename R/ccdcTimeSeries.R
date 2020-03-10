@@ -8,7 +8,7 @@
 #'
 #' @param values a dataframe with time series Landsat data.
 #' @param VI character. A spectral index to fit harmonic model.
-#' @param startDOY numeric. A julian date of starting CCD change detection.
+#' @param startDOY numeric. A julian day of starting CCD change detection.
 #' @param fillNA logical. If TRUE, fill NA values in time seires with original values.
 #' @param init_rirls (function)
 #' @param rirls (function)
@@ -201,7 +201,7 @@ ccdcTimeSeries <- function(values, VI = "NBR", startDOY = 2016, fillNA = F, init
 #'
 #' @param values a dataframe with time series Landsat data.
 #' @param VI character. A spectral index to fit harmonic model.
-#' @param startDOY numeric. A julian date of starting CCD change detection.
+#' @param startDOY numeric. A julian day of starting CCD change detection.
 #' @param init_rirls (function)
 #' @param rirls (function)
 #' @param ccdc (function)

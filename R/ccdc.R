@@ -2,7 +2,7 @@
 
 #' initial implementation of CCDC
 #'
-#' @param doys a list of julain date
+#' @param doys a list of julain day
 #' @param vals values corresponding to \code{doys}.
 #' @param index cols for using ccdc.
 #' @param col_adj adjustment for cols to insert results into dataframe.
@@ -32,10 +32,10 @@ init_ccdc <- function(doys, vals, index, col_adj, wch_start, wch_end, ccdc, rmse
 #'
 #' Implementation of a simple CCDC harmonic regression. See original article by Zhu et al. (2014) for details.
 #'
-#' @param doy a list of julain date
+#' @param doy a list of julain day
 #' @param val values corresponding to \code{doy}.
 #' @param fit NULL or julian dates to be fit. This change return of the function.
-#' @param period A maximum julian date to limit fitting (optional). Use NULL to ignore.
+#' @param period A maximum julian day to limit fitting (optional). Use NULL to ignore.
 #'
 #' @return If fit = NULL, coefficients of CCDC implementation. Otherwise fitted values using coefficients.
 #'

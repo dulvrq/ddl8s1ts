@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 `ddl8s1ts` is an R package for detecting and mapping forest disturbance using Landsat 8 and Sentinel-1 time seires. Harmonic regression models are applied to both Landsat 8 and Sentinel-1 time series to predict disturbance probability. Disturbance is detected based on the time series of disturbance probabilities predicted by Random Forests (RF).
 
 * The functions are tested only on Windows OS. 
-* The process takes very long time to map large area and uses much memory and CPUs.
+* The process takes very long time to map large area and uses much memory and CPUs in parallel computing.
 
 ## Installation
 
@@ -122,7 +122,7 @@ VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
 ```
 
 #### 1. Full implementation of building RF models and mapping disturbance
-`mapDisturbanceL8S1()` has 2 processing parts: RF model building and disturbance mapping. A simple implementation is to process both as follows. This takes very long time.
+`mapDisturbanceL8S1()` has 2 processing parts: RF model building and disturbance mapping. A simple implementation is to process both as follows. Please note that this function uses parallel processing and consume much memory and CPUs. Furrthermore, this process takes very long time.
 
 ```{r sample_1, eval = F}
 # use only_rf = F & rf_model = NULL to run entire process.

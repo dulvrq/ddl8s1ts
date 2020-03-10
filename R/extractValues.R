@@ -4,7 +4,7 @@
 #' Extract values from L8, S1, or DEM at locations x and y.
 #'
 #' @param ls_l8 a file list of Landsat 8 or Sentinel-1. All files should have the same extent.
-#' @param l8_doys a list of julian date of Landsat 8 or Sentinel-1 (numeric).
+#' @param l8_doys a list of julian day of Landsat 8 or Sentinel-1 (numeric).
 #' This should be the same order and length as \code{ls_l8}.
 #' @param dt_ref a dataframe of reference data for RF. This should contain column 'x', 'y', and 'date'.
 #' x and y should indicate locations in the same crs as Landsat or Sentinel. 'date' should indicate the timing of disturbance.

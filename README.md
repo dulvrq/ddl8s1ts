@@ -15,7 +15,7 @@ series of disturbance probabilities predicted by Random Forests (RF).
 
   - The functions are tested only on Windows OS.
   - The process takes very long time to map large area and uses much
-    memory and CPUs.
+    memory and CPUs in parallel computing.
 
 ## Installation
 
@@ -143,7 +143,9 @@ VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
 
 `mapDisturbanceL8S1()` has 2 processing parts: RF model building and
 disturbance mapping. A simple implementation is to process both as
-follows. This takes very long time.
+follows. Please note that this function uses parallel processing and
+consume much memory and CPUs. Furrthermore, this process takes very long
+time.
 
 ``` r
 # use only_rf = F & rf_model = NULL to run entire process.
