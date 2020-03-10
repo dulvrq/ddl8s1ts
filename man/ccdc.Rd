@@ -7,13 +7,13 @@
 ccdc(doy, val, fit = NULL, period = NULL)
 }
 \arguments{
-\item{doy}{a list of julain date}
+\item{doy}{a list of julain day}
 
 \item{val}{values corresponding to \code{doy}.}
 
 \item{fit}{NULL or julian dates to be fit. This change return of the function.}
 
-\item{period}{A maximum julian date to limit fitting (optional). Use NULL to ignore.}
+\item{period}{A maximum julian day to limit fitting (optional). Use NULL to ignore.}
 }
 \value{
 If fit = NULL, coefficients of CCDC implementation. Otherwise fitted values using coefficients.

@@ -128,7 +128,8 @@ list of two RF models.
 `mmu`: a minimum mapping unit (pixel) for final mapping. Use `NULL` to
 avoid `mmu`.  
 `only_rf`: If `TRUE`, only build RF models. If `FALSE`, build RF models
-and map disturbance detection.
+and map disturbance detection.  
+`max_cores`: a maximum cores used for parallel processing.
 
 ``` r
 ls_dem <- NULL # do not use DEM in RF models
@@ -137,6 +138,7 @@ startDOY <- 2016 # detect disturbance from 2016/01/01
 endDOY   <- 2018 # detect disturbance until 2017/12/31
 mmu      <- 4
 VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
+max_cores<- 20
 ```
 
 #### example 1. Full implementation of building RF models and mapping disturbance
@@ -150,7 +152,7 @@ time.
 ``` r
 # use only_rf = F & rf_model = NULL to run entire process.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F)
+                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
 ```
 
 #### example 2. Full implementation only with Landsat 8
@@ -161,7 +163,7 @@ either of file list.
 ``` r
 # use ls_s1 = NULL.
 mapDisturbanceL8S1(ls_l8, NULL, l8_doys, NULL, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F)
+                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
 ```
 
 #### example 3. Implementation of RF modeling
@@ -173,7 +175,7 @@ then use `only_rf = TRUE`. This only generate RF models in a subfolder.
 ``` r
 # use only_rf = T.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = T)
+                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = T, max_cores)
 ```
 
 #### example 4. Implementation of disturbance mapping
@@ -185,7 +187,7 @@ and Sentinel-1).
 ``` r
 # provide rf_model, a list of two RF models.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F)
+                             rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F, max_cores)
 ```
 
 #### Other note:

@@ -33,6 +33,7 @@
 #' @param endDOY a julian day of the terminate day of disturbance detection.
 #' @param mmu numeric. minimum mapping unit (pixel) for final maps. New tif image will be additionally generated.
 #' @param only_rf logical. If TRUE, only build RF models. If FALSE, build RF models and map disturbance detection.
+#' @param max_cores numeric. Maximum numbers of cores used for parallel processing.
 #'
 #' @importFrom dplyr rename %>% filter mutate
 #' @importFrom raster raster extent crop writeRaster
@@ -46,7 +47,7 @@
 #'
 
 mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = NULL, dir_save, VI,
-                               rf_model = NULL, startDOY, endDOY, mmu = NULL, only_rf = F){
+                               rf_model = NULL, startDOY, endDOY, mmu = NULL, only_rf = F, max_cores = 20){
 
 
   # buid RF model if not specified ---
@@ -69,14 +70,14 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_l8)){
       cat(catTime(), " extract L8 reference data...")
       ## extract values from each image ---
-      dt_l8 <- extractParallel(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7))
+      dt_l8 <- extractParallel(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7), max_cores)
 
       # implement CCDC for each location (ID) ---
       cat(catTime(), " fit harmonic models to L8 reference data...")
       ## IDs ---
       id_uniq <- sort(unique(dt_l8$ID))
       ## parallel ---
-      n_cl <- detectCores()
+      n_cl <- min(max_cores, detectCores())
       cluster <- makeCluster(n_cl)
       registerDoParallel(cluster)
       ## implement at each location ---
@@ -120,7 +121,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       cat(catTime(), " tune a RF model of L8 reference data...")
       res_rf_l8 <- implementRF(dt_train = dt_l8_c[sample_train_l8,  colUse_l8],
                                dt_test  = dt_l8_c[-sample_train_l8, colUse_l8],
-                               dir_rf = dir_rf, name_rdata = "rf_L8.Rdata", do_prallel = T)
+                               dir_rf = dir_rf, name_rdata = "rf_L8.Rdata", do_prallel = T, max_cores)
     }
 
 
@@ -128,14 +129,14 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_s1)){
       cat(catTime(), " extract S1 reference data...")
       ## extract values from each image ---
-      dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = c("VV", "VH"))
+      dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = c("VV", "VH"), max_cores)
 
       cat(catTime(), " fit harmonic models to S1 reference data...")
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
 
       ## extract values from each image ---
-      n_cl <- detectCores()
+      n_cl <- min(max_cores, detectCores())
       cluster <- makeCluster(n_cl)
       registerDoParallel(cluster)
       ## implement at each location ---
@@ -180,7 +181,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       cat(catTime(), " tune a RF model of S1 reference data...")
       res_rf_s1 <- implementRF(dt_train = dt_s1_c[sample_train_s1,  colUse_s1],
                                dt_test  = dt_s1_c[-sample_train_s1, colUse_s1],
-                               dir_rf = dir_rf, name_rdata = "rf_S1.Rdata", do_prallel = T)
+                               dir_rf = dir_rf, name_rdata = "rf_S1.Rdata", do_prallel = T, max_cores)
     }
 
 
@@ -228,13 +229,13 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_l8)){
       cat(catTime(), " extract values from L8 data...")
       ## extract values from each image --
-      dt_l8 <- extractParallelCrop(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7))
+      dt_l8 <- extractParallelCrop(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7), max_cores)
 
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_l8$ID))
 
       ## extract values from each image ---
-      n_cl <- detectCores()
+      n_cl <- min(max_cores, detectCores())
       cluster <- makeCluster(n_cl)
       registerDoParallel(cluster)
       cat(catTime(), " fit harmonic models to L8 data...")
@@ -285,13 +286,13 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_s1)){
       cat(catTime(), " extract values from S1 data...")
       ## extract values from each image --
-      dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = c("VV", "VH"))
+      dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = c("VV", "VH"), max_cores)
 
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
 
       ## extract values from each image ---
-      n_cl <- detectCores()
+      n_cl <- min(max_cores, detectCores())
       cluster <- makeCluster(n_cl)
       registerDoParallel(cluster)
       cat(catTime(), " fit harmonic models to S1 data...")

@@ -21,7 +21,7 @@ ccdcTimeSeries(
 
 \item{VI}{character. A spectral index to fit harmonic model.}
 
-\item{startDOY}{numeric. A julian date of starting CCD change detection.}
+\item{startDOY}{numeric. A julian day of starting CCD change detection.}
 
 \item{fillNA}{logical. If TRUE, fill NA values in time seires with original values.}
 

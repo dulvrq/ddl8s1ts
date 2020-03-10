@@ -7,7 +7,7 @@
 init_ccdc(doys, vals, index, col_adj, wch_start, wch_end, ccdc, rmse)
 }
 \arguments{
-\item{doys}{a list of julain date}
+\item{doys}{a list of julain day}
 
 \item{vals}{values corresponding to \code{doys}.}
 

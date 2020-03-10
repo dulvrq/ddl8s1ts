@@ -4,17 +4,25 @@
 \alias{extractParallelCrop}
 \title{Extract values from raster and crop by extent}
 \usage{
-extractParallelCrop(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7))
+extractParallelCrop(
+  ls_l8,
+  l8_doys,
+  e1,
+  col_names = paste0("B", 2:7),
+  max_cores
+)
 }
 \arguments{
 \item{ls_l8}{a file list of Landsat 8 or Sentinel-1. All files should have the same extent.}
 
-\item{l8_doys}{a list of julian date of Landsat 8 or Sentinel-1 (numeric).
+\item{l8_doys}{a list of julian day of Landsat 8 or Sentinel-1 (numeric).
 This should be the same order and length as \code{ls_l8}.}
 
 \item{e1}{an extent of cropping.}
 
 \item{col_names}{names of bands. If L8, this should be B2, B3...B7. If S1, this should be VV and VH.}
+
+\item{max_cores}{numeric. Maximum numbers of cores used for parallel processing.}
 }
 \value{
 a dataframe of data values for each location.

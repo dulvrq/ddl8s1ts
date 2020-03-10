@@ -10,6 +10,7 @@
 #' x and y should indicate locations in the same crs as Landsat or Sentinel. 'date' should indicate the timing of disturbance.
 #' If there is no disturbance at that location, use NA.
 #' @param col_names names of bands. If L8, this should be B2, B3...B7. If S1, this should be VV and VH.
+#' @param max_cores numeric. Maximum numbers of cores used for parallel processing.
 #'
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel detectCores makeCluster stopCluster
@@ -22,9 +23,9 @@
 #' a dataframe of data values for each location.
 
 
-extractParallel <- function(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7)){
+extractParallel <- function(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7), max_cores){
   ## parallel ---
-  n_cl <- detectCores()
+  n_cl <- min(max_cores, detectCores())
   cluster <- makeCluster(n_cl)
   registerDoParallel(cluster)
   ## extract values from each image ---

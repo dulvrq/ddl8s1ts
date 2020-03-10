@@ -9,7 +9,8 @@ implementRF(
   dt_test,
   dir_rf = NULL,
   name_rdata = NULL,
-  do_prallel = T
+  do_prallel = T,
+  max_cores
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ implementRF(
 \item{name_rdata}{filefame for saving the RF result. If NULL, name will be automatically generated.}
 
 \item{do_prallel}{logical. If TRUE, use parallel process to tune RF.}
+
+\item{max_cores}{numeric. Maximum numbers of cores used for parallel processing.}
 }
 \value{
 a list of the results of RF modeling. Rdata file is saved in a subfolder.

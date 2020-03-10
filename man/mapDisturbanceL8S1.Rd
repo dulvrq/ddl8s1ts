@@ -17,7 +17,8 @@ mapDisturbanceL8S1(
   startDOY,
   endDOY,
   mmu = NULL,
-  only_rf = F
+  only_rf = F,
+  max_cores = 20
 )
 }
 \arguments{
@@ -26,9 +27,9 @@ mapDisturbanceL8S1(
 \item{ls_s1}{a file list of Sentinel-1 with 2 bands (VV and VH, in this order). If this is used with Landsat,
 all files should have the same extent as Landsat (i.e. same origin, crs and resolution)}
 
-\item{l8_doys}{a list of julian date of Landsat 8 (numeric). This should be the same order and length as \code{ls_l8}.}
+\item{l8_doys}{a list of julian day of Landsat 8 (numeric). This should be the same order and length as \code{ls_l8}.}
 
-\item{s1_doys}{a list of julian date of Sentinel-1 (numeric). This should be the same order and length as \code{ls_s1}.}
+\item{s1_doys}{a list of julian day of Sentinel-1 (numeric). This should be the same order and length as \code{ls_s1}.}
 
 \item{dt_ref}{a dataframe of reference data for RF. This should contain column 'x', 'y', and 'date'. x and y should
 indicate locations in the same crs as Landsat or Sentinel. 'date' should indicate the timing of disturbance.
@@ -43,13 +44,15 @@ If this is not to be used for model, set NULL.}
 
 \item{rf_model}{a list of two RF models (as list) to skip RF model. Set NULL to build RF model.}
 
-\item{startDOY}{a julian date of the initial timing of disturbance detection (e.g. 2016-02-01 should be 2016.08767)}
+\item{startDOY}{a julian day of the initial timing of disturbance detection (e.g. 2016-02-01 should be 2016.08767)}
 
-\item{endDOY}{a julian date of the terminate day of disturbance detection.}
+\item{endDOY}{a julian day of the terminate day of disturbance detection.}
 
 \item{mmu}{numeric. minimum mapping unit (pixel) for final maps. New tif image will be additionally generated.}
 
 \item{only_rf}{logical. If TRUE, only build RF models. If FALSE, build RF models and map disturbance detection.}
+
+\item{max_cores}{numeric. Maximum numbers of cores used for parallel processing.}
 }
 \value{
 a filename of mapped disturbance.

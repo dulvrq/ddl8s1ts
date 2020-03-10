@@ -11,9 +11,9 @@ rirls(doy, val, fit = NULL, period = NULL)
 
 \item{val}{values corresponding to \code{doy}.}
 
-\item{fit}{NULL or julian dates to be fit. This change return of the function.}
+\item{fit}{NULL or julian days to be fit. This change return of the function.}
 
-\item{period}{A maximum julian date to limit fitting (optional). Use NULL to ignore.}
+\item{period}{A maximum julian day to limit fitting (optional). Use NULL to ignore.}
 }
 \value{
 If fit = NULL, coefficients of RIRLS implementation. Otherwise fitted values using coefficients.

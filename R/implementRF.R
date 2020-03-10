@@ -8,6 +8,7 @@
 #' @param dir_rf a directory to save the result of RF. If NULL, a subfolder will be automatically generated.
 #' @param name_rdata filefame for saving the RF result. If NULL, name will be automatically generated.
 #' @param do_prallel logical. If TRUE, use parallel process to tune RF.
+#' @param max_cores numeric. Maximum numbers of cores used for parallel processing.
 #'
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel detectCores makeCluster stopCluster
@@ -17,7 +18,7 @@
 #'
 #' @return a list of the results of RF modeling. Rdata file is saved in a subfolder.
 #'
-implementRF <- function(dt_train, dt_test, dir_rf = NULL, name_rdata = NULL, do_prallel = T){
+implementRF <- function(dt_train, dt_test, dir_rf = NULL, name_rdata = NULL, do_prallel = T, max_cores){
 
   # save dirs ---
   if(is.null(dir_rf)) dir_rf <- file.path(getwd(), "rf_result")
@@ -31,7 +32,8 @@ implementRF <- function(dt_train, dt_test, dir_rf = NULL, name_rdata = NULL, do_
 
 
   if(do_prallel){
-    cl <- makeCluster(detectCores())
+    n_cl <- min(max_cores, detectCores())
+    cl <- makeCluster(n_cl)
     registerDoParallel(cl)
   }
 

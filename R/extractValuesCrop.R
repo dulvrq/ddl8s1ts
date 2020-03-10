@@ -6,6 +6,7 @@
 #' This should be the same order and length as \code{ls_l8}.
 #' @param e1 an extent of cropping.
 #' @param col_names names of bands. If L8, this should be B2, B3...B7. If S1, this should be VV and VH.
+#' @param max_cores numeric. Maximum numbers of cores used for parallel processing.
 #'
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel detectCores makeCluster stopCluster
@@ -17,9 +18,9 @@
 #' @return
 #' a dataframe of data values for each location.
 
-extractParallelCrop <- function(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7)){
+extractParallelCrop <- function(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7), max_cores){
   ## parallel ---
-  n_cl <- detectCores()
+  n_cl <- min(max_cores, detectCores())
   cluster <- makeCluster(n_cl)
   registerDoParallel(cluster)
   ## extract values from each image ---
