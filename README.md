@@ -139,7 +139,7 @@ mmu      <- 4
 VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
 ```
 
-#### 1\. Full implementation of building RF models and mapping disturbance
+#### example 1. Full implementation of building RF models and mapping disturbance
 
 `mapDisturbanceL8S1()` has 2 processing parts: RF model building and
 disturbance mapping. A simple implementation is to process both as
@@ -153,7 +153,7 @@ mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
                              rf_model = NULL, startDOY, endDOY, mmu, only_rf = F)
 ```
 
-#### 2\. Full implementation only with Landsat 8
+#### example 2. Full implementation only with Landsat 8
 
 If you would like to use either of Landsat 8 or Sentinel-1, use NULL to
 either of file list.
@@ -164,7 +164,7 @@ mapDisturbanceL8S1(ls_l8, NULL, l8_doys, NULL, dt_ref, ls_dem, dir_save, VI,
                              rf_model = NULL, startDOY, endDOY, mmu, only_rf = F)
 ```
 
-#### 3\. Implementation of RF modeling
+#### example 3. Implementation of RF modeling
 
 If you would like to run only RF model building, such as in case that
 samples are from large extent but would like to map only small extent,
@@ -176,7 +176,7 @@ mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
                              rf_model = NULL, startDOY, endDOY, mmu, only_rf = T)
 ```
 
-#### 4\. Implementation of disturbance mapping
+#### example 4. Implementation of disturbance mapping
 
 If you would like to run only disturbance mapping, such as in case of
 mapping only small extent, then provide a list of two RF models (Landsat
@@ -187,6 +187,15 @@ and Sentinel-1).
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
                              rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F)
 ```
+
+#### Other note:
+
+  - It is a good idea to mask forest area before running this
+    function.  
+  - A sub folder is automatically generated for saving RF results and
+    temporally tiles of mapping.  
+  - 50% of reference samples are used for RF modeling, and the rest are
+    used for evaluation.
 
 ## Reference
 
