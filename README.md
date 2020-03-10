@@ -39,7 +39,7 @@ beforehand.
 `ls_l8`: requires a file list of 6 bands images of Landsat 8 (B2, B3,
 B4, B5, B6, and B7). All images must have the same extent (origin,
 resolution, and crs). These should be surface reflectance products, may
-be from Google Earth Engine (GEE) or other preprocessing chains. No data
+be from Google Earth Engine (GEE) or other preprocessing chains. NoData
 values should be `NA`, not 0 (sometimes occurred in GEE output). An
 exmaple of this product is the following.
 
@@ -144,7 +144,7 @@ VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
 `mapDisturbanceL8S1()` has 2 processing parts: RF model building and
 disturbance mapping. A simple implementation is to process both as
 follows. Please note that this function uses parallel processing and
-consume much memory and CPUs. Furrthermore, this process takes very long
+consume much memory and CPUs. Furthermore, this process takes very long
 time.
 
 ``` r
