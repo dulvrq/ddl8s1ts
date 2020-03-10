@@ -47,10 +47,10 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
                           estDateMix = 0)
 
   if(!is.null(dt_l8_use)){
-    dt_l8_ci <- split(dt_l8_c, dt_l8_c$ID)
+    dt_l8_ci <- split(dt_l8_use, dt_l8_use$ID)
   }
   if(!is.null(dt_s1_use)){
-    dt_s1_ci <- split(dt_s1_c, dt_s1_c$ID)
+    dt_s1_ci <- split(dt_s1_use, dt_s1_use$ID)
   }
 
   pb <- txtProgressBar(1, length(ids), style = 3)
