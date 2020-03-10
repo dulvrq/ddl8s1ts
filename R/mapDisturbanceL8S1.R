@@ -337,7 +337,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
 
     ## detect disturbance ---
-    cat(catTime(), " detect disturbance at the each pixel location...")
+    cat(catTime(), " detect disturbance at the each pixel location...\n")
     if(!exists("dt_l8_c")) dt_l8_c <- NULL; ids <- sort(unique(dt_s1_c$ID))
     if(!exists("dt_s1_c")) dt_s1_c <- NULL; ids <- sort(unique(dt_l8_c$ID))
     if(exists("dt_l8_c") & exists("dt_s1_c")) ids <- sort(unique(c(dt_l8_c$ID, dt_s1_c$ID)))
