@@ -77,3 +77,6 @@ This use parallel process to save time.
 Only 50\% of sample ID is used for RF modeling.Subfolders are automatically genereted for saving RF models
 and mapping temporally tiles of a disturbance map.
 }
+\examples{
+
+}

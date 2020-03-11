@@ -46,6 +46,7 @@
 #' @return a filename of mapped disturbance.
 #'
 #' @export
+#' @examples
 #'
 
 mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = NULL, dir_save, VI, rf_model = NULL,
@@ -195,10 +196,10 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
 
   } else {
-    #' use already tuned models.
-    #' should have the same varaibles in the follwing process
-    #' 'rf_model' should be the list of 2 rf results (Landsat and Sentinel)
-    #' in case only one model is available, use NULL for missing model
+    # use already tuned models.
+    # should have the same varaibles in the follwing process
+    # 'rf_model' should be the list of 2 rf results (Landsat and Sentinel)
+    # in case only one model is available, use NULL for missing model
 
     cat(catTime(), "NOT run RF model building. Use the tuned RF models...")
     res_rf_l8 <- list(rf_model[[1]], NA, NA)
