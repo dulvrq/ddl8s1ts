@@ -34,8 +34,6 @@ are required for running `mapDisturbanceL8S1()` to detect and map
 disturbance. The followings are key variables that should be prepared
 beforehand.
 
-    #> Warning: package 'raster' was built under R version 3.6.3
-
 **Landsat 8 data**
 
 `ls_l8`: requires a file list of 6 bands images of Landsat 8 (B2, B3,

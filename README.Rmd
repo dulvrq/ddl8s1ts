@@ -37,7 +37,7 @@ library(ddl8s1ts)
 Currently, `mapDisturbanceL8S1()` is an only usable function in this package. All other functions are called by this function. Several data are required for running `mapDisturbanceL8S1()` to detect and map disturbance. The followings are key variables that should be prepared beforehand.
 
 ```{r echo = F}
-library(raster, quietly = T)
+suppressWarnings(library(raster, quietly = T))
 library(ddl8s1ts)
 dir_main <- dirname(dirname(getwd()))
 # ls_l8 ls_s1
