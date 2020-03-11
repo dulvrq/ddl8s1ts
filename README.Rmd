@@ -37,20 +37,16 @@ library(ddl8s1ts)
 Currently, `mapDisturbanceL8S1()` is an only usable function in this package. All other functions are called by this function. Several data are required for running `mapDisturbanceL8S1()` to detect and map disturbance. The followings are key variables that should be prepared beforehand.
 
 ```{r echo = F}
+library(raster, quietly = T)
+library(ddl8s1ts)
 dir_main <- dirname(dirname(getwd()))
 # ls_l8 ls_s1
 dir_l8 <- paste0(dir_main, "/GIS_data/_for_share/Landsat_SR")
-ls_l8  <- list.files(dir_l8, "tif$", full.names = T)
-ls_l8  <- gsub("OutPut_", "", ls_l8)
+list_l8  <- list.files(dir_l8, "tif$", full.names = T)
+list_l8  <- gsub("OutPut_", "", list_l8)
 dir_s1 <- paste0(dir_main, "/GIS_data/_for_share/Sentinel-1_VV_VH")
-ls_s1  <- list.files(dir_s1, "tif$", full.names = T)
-ls_s1  <- gsub("OutPut_", "", ls_s1)
-# ref data
-dir_rdata  <- paste0(dir_main, "/GIS_data/_for_share/manual_data")
-name_rdata <- paste0(dir_rdata, "/visualInterpretation_data.Rdata")
-load(name_rdata)
-dt_ref <- dt_vis
-
+list_s1  <- list.files(dir_s1, "tif$", full.names = T)
+list_s1  <- gsub("OutPut_", "", list_s1)
 ```
 
 **Landsat 8 data**
@@ -58,16 +54,30 @@ dt_ref <- dt_vis
 `ls_l8`: requires a file list of 6 bands images of Landsat 8 (B2, B3, B4, B5, B6, and B7). All images must have the same extent (origin, resolution, and crs). These should be surface reflectance products, may be from Google Earth Engine (GEE) or other preprocessing chains. NoData values should be `NA`, not 0 (sometimes occurred in GEE output). An exmaple of this product is the following.
 
 ```{r example_ls_l8}
-head(basename(ls_l8))
+# an example data in this package
+head(ls_l8, 1)
 ```
+When you use your own data, it is also acceptable to use a filename provided by `list.files` as follows.
+```{r example_list_l8}
+# use list.files to list files in your directory
+head(basename(list_l8))
+```
+
 
 **Sentinel-1 data**
 
 `ls_s1`: requires a file list of 2 bands images of Sentinel-1 (VV and VH). All images must have the same extent (origin, resolution, and crs). These might be from GEE or other preprocessing chains. An exmaple of this product is the following.
 
 ```{r example_ls_s1}
-head(basename(ls_s1))
+# an example data in this package
+head(ls_s1, 1)
 ```
+Of course you can use a filename provided by `list.files` in the same manner.
+```{r example_list_s1}
+# use list.files to list files in your directory
+head(basename(list_s1))
+```
+
 
 **Julian day of Landsat 8 and Sentinel-1 data**
 
@@ -76,28 +86,30 @@ head(basename(ls_s1))
 
 ```{r doys}
 # calculate julian day from filenames
+fname_l8 <- sapply(ls_l8, function(x) names(x)[1])
+fname_s1 <- sapply(ls_s1, function(x) names(x)[1])
 n <- 18
-l8_dates <- paste(substring(basename(ls_l8), n,   n+3),
-                  substring(basename(ls_l8), n+4, n+5),
-                  substring(basename(ls_l8), n+6, n+7), sep = "-")
-l8_doys <- as.numeric(substring(basename(ls_l8), n, n+3)) + as.numeric(strftime(l8_dates, format = "%j")) / 365
-s1_dates <- paste(substring(basename(ls_s1), n,   n+3),
-                  substring(basename(ls_s1), n+4, n+5),
-                  substring(basename(ls_s1), n+6, n+7), sep = "-")
-s1_doys <- as.numeric(substring(basename(ls_s1), n, n+3)) + as.numeric(strftime(s1_dates, format = "%j")) / 365
+l8_dates <- paste(substring(fname_l8, n,   n+3),
+                  substring(fname_l8, n+4, n+5),
+                  substring(fname_l8, n+6, n+7), sep = "-")
+l8_doys <- as.numeric(substring(fname_l8, n, n+3)) + as.numeric(strftime(l8_dates, format = "%j")) / 365
+s1_dates <- paste(substring(fname_s1, n,   n+3),
+                  substring(fname_s1, n+4, n+5),
+                  substring(fname_s1, n+6, n+7), sep = "-")
+s1_doys <- as.numeric(substring(fname_s1, n, n+3)) + as.numeric(strftime(s1_dates, format = "%j")) / 365
 
 head(l8_doys)
 head(s1_doys)
 ```
 
-**Refernce data for disturbance detection**
+**Reference data for disturbance detection**
 
 `dt_ref`: is a dataframe of reference data for RF modeling. This should contain column `x`, `y`, and `date`. 
 `x` and `y` should indicate locations of reference samples in the same crs as Landsat 8 or Sentinel-1. 
 `date` should indicate the timing of disturbance. If there is no disturbance at the sample location, use `NA`.
 
 ```{r dt_ref}
-# this is an example.
+# an example data in this package
 head(dt_ref)
 ```
 
@@ -111,7 +123,8 @@ head(dt_ref)
 `endDOY`: a end date of disturbance detection.   
 `mmu`: a minimum mapping unit (pixel) for final mapping. Use `NULL` to avoid `mmu`.    
 `only_rf`: If `TRUE`, only build RF models. If `FALSE`, build RF models and map disturbance detection.    
-`max_cores`: a maximum cores used for parallel processing.
+`max_cores`: a maximum cores used for parallel processing.    
+`threshold`: a threshold to detect disturbance from time series disturbance probabilities.
 
 ```{r others}
 ls_dem <- NULL # do not use DEM in RF models
@@ -120,7 +133,8 @@ startDOY <- 2016 # detect disturbance from 2016/01/01
 endDOY   <- 2018 # detect disturbance until 2017/12/31
 mmu      <- 4
 VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
-max_cores<- 20
+max_cores <- 20
+threshold <- 0.5
 ```
 
 #### example 1. Full implementation of building RF models and mapping disturbance
@@ -129,7 +143,7 @@ max_cores<- 20
 ```{r sample_1, eval = F}
 # use only_rf = F & rf_model = NULL to run entire process.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 #### example 2. Full implementation only with Landsat 8
@@ -138,7 +152,7 @@ If you would like to use either of Landsat 8 or Sentinel-1, use NULL to either o
 ```{r sample_2, eval = F}
 # use ls_s1 = NULL.
 mapDisturbanceL8S1(ls_l8, NULL, l8_doys, NULL, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 #### example 3. Implementation of RF modeling
@@ -147,7 +161,7 @@ If you would like to run only RF model building, such as in case that samples ar
 ```{r sample_3, eval = F}
 # use only_rf = T.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = T, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = T, max_cores, threshold)
 ```
 
 #### example 4. Implementation of disturbance mapping
@@ -156,13 +170,13 @@ If you would like to run only disturbance mapping, such as in case of mapping on
 ```{r sample_4, eval = F}
 # provide rf_model, a list of two RF models.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 
 #### Other note:
 - It is a good idea to mask forest area before running this function.   
-- A sub folder is automatically generated for saving RF results and temporally tiles of mapping.  
+- A subfolder is automatically generated for saving RF results and temporally tiles of mapping.  
 - 50% of reference samples are used for RF modeling, and the rest are used for evaluation.
 
 

@@ -33,7 +33,8 @@ matchVector<-function(x, pattern){
 #' @param lag_m (Deprecated). lag date for identifying disturbance.
 #' @param savename filenames for saving plots. If NULL, no plots.
 #'
-#' @importFrom ggplot2 ggplot geom_line geom_point geom_vline scale_x_continuous scale_y_continuous ggtitle xlab theme
+#' @importFrom ggplot2 ggplot geom_line geom_point geom_vline scale_x_continuous scale_y_continuous ggtitle theme
+#' @importFrom ggplot2 xlab ylab element_text aes theme_bw theme_set
 #'
 #' @return a dataframe with disturbance detection.
 #'
@@ -158,7 +159,7 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
 
       print(a)
 
-      if(i == length(which_test)) dev.off()
+      if(i == length(ids)) dev.off()
     }
 
     setTxtProgressBar(pb, i)

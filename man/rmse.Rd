@@ -6,6 +6,11 @@
 \usage{
 rmse(x, y)
 }
+\arguments{
+\item{x}{x}
+
+\item{y}{y}
+}
 \description{
 Calculate RMSE
 }

@@ -18,7 +18,8 @@ mapDisturbanceL8S1(
   endDOY,
   mmu = NULL,
   only_rf = F,
-  max_cores = 20
+  max_cores = 20,
+  threshold = 0.5
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ If this is not to be used for model, set NULL.}
 \item{only_rf}{logical. If TRUE, only build RF models. If FALSE, build RF models and map disturbance detection.}
 
 \item{max_cores}{numeric. Maximum numbers of cores used for parallel processing.}
+
+\item{threshold}{numeric from 0 to 1. A threshold to detect disturbance from time series disturbance probabilities.}
 }
 \value{
 a filename of mapped disturbance.

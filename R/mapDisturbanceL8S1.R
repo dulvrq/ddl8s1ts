@@ -34,21 +34,27 @@
 #' @param mmu numeric. minimum mapping unit (pixel) for final maps. New tif image will be additionally generated.
 #' @param only_rf logical. If TRUE, only build RF models. If FALSE, build RF models and map disturbance detection.
 #' @param max_cores numeric. Maximum numbers of cores used for parallel processing.
+#' @param threshold numeric from 0 to 1. A threshold to detect disturbance from time series disturbance probabilities.
 #'
 #' @importFrom dplyr rename %>% filter mutate
-#' @importFrom raster raster extent crop writeRaster
+#' @importFrom raster raster extent crop writeRaster ncell
 #' @importFrom doParallel registerDoParallel
 #' @importFrom parallel detectCores makeCluster stopCluster
 #' @importFrom gdalUtils mosaic_rasters
+#' @importFrom foreach foreach %dopar%
 #'
 #' @return a filename of mapped disturbance.
 #'
 #' @export
 #'
 
-mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = NULL, dir_save, VI,
-                               rf_model = NULL, startDOY, endDOY, mmu = NULL, only_rf = F, max_cores = 20){
+mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = NULL, dir_save, VI, rf_model = NULL,
+                                startDOY, endDOY, mmu = NULL, only_rf = F, max_cores = 20, threshold = 0.5){
 
+  # convert list ---
+  if(class(ls_l8) == "character") ls_l8 <- as.list(ls_l8)
+  if(class(ls_s1) == "character") ls_s1 <- as.list(ls_s1)
+  if(class(ls_dem) == "character") ls_dem <- as.list(ls_dem)
 
   # buid RF model if not specified ---
   if(is.null(rf_model)){
@@ -194,9 +200,9 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     #' 'rf_model' should be the list of 2 rf results (Landsat and Sentinel)
     #' in case only one model is available, use NULL for missing model
 
-    cat(catTime(), "NOT run Building RF model, use tuned RF models...")
-    res_rf_l8 <- rf_model[[1]]
-    res_rf_s1 <- rf_model[[2]]
+    cat(catTime(), "NOT run RF model building. Use the tuned RF models...")
+    res_rf_l8 <- list(rf_model[[1]], NA, NA)
+    res_rf_s1 <- list(rf_model[[2]], NA, NA)
 
   }
 
@@ -204,9 +210,9 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
   # predict and map the result ---
   ## determin split n of blocks ---
   if(!is.null(ls_l8)){
-    r_i <- raster(ls_l8[1])
+    r_i <- raster(ls_l8[[1]])
   }else{
-    r_i <- raster(ls_s1[1])
+    r_i <- raster(ls_s1[[1]])
   }
 
   n_xys <- ncell(r_i)
@@ -278,7 +284,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
       # predict based on RF result ---
       cat(catTime(), " predict disturbance probability of L8 data...")
-      dt_l8_c$predict <- predict(res_rf_l8, dt_l8_c[,colUse_l8], type = "prob")[,"1"]
+      dt_l8_c$predict <- predict(res_rf_l8[[1]], dt_l8_c[,colUse_l8], type = "prob")[,"1"]
     }
 
 
@@ -287,7 +293,6 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       cat(catTime(), " extract values from S1 data...")
       ## extract values from each image --
       dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = c("VV", "VH"), max_cores)
-
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
 
@@ -333,18 +338,24 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
       # predict based on RF result ---
       cat(catTime(), " predict disturbance probability of S1 data...")
-      dt_s1_c$predict <- predict(res_rf_s1, dt_s1_c[,colUse_s1], type = "prob")[,"1"]
+      dt_s1_c$predict <- predict(res_rf_s1[[1]], dt_s1_c[,colUse_s1], type = "prob")[,"1"]
     }
 
 
     ## detect disturbance ---
     cat(catTime(), " detect disturbance at the each pixel location...\n")
-    if(!exists("dt_l8_c")) dt_l8_c <- NULL; ids <- sort(unique(dt_s1_c$ID))
-    if(!exists("dt_s1_c")) dt_s1_c <- NULL; ids <- sort(unique(dt_l8_c$ID))
+    if(!exists("dt_l8_c")) {
+      dt_l8_c <- NULL
+      ids <- sort(unique(dt_s1_c$ID))
+    }
+    if(!exists("dt_s1_c")) {
+      dt_s1_c <- NULL
+      ids <- sort(unique(dt_l8_c$ID))
+    }
     if(exists("dt_l8_c") & exists("dt_s1_c")) ids <- sort(unique(c(dt_l8_c$ID, dt_s1_c$ID)))
 
     res_detect <- judgeProbSeriesDetect(dt_l8_c, dt_s1_c, ids = ids,
-                                       threshold = 0.5, seq_l = c(T,T,T), lag_m = 10, savename = NULL)
+                                       threshold = threshold, seq_l = c(T,T,T), lag_m = 10, savename = NULL)
 
 
     # set as tile image ---
@@ -366,14 +377,14 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
   }
 
   # combine all temp tile files ---
-  cat(catTime(), "Combine splited blocks...")
+  cat(catTime(), "Combine splited blocks...\n")
   ls_blocks  <- list.files(dir_temp, "temp_tile_.+tif$", full.names = T)
   name_merge <- paste0(dir_save, "/disturbance_detection_L8S1.tif")
   r_merge    <- mosaic_rasters(ls_blocks, name_merge, output_Raster = T, co = c("COMPRESS=DEFLATE"))
 
   # apply mmu if needed
   if(!is.null(mmu)){
-    cat(catTime(), "Apply MMU of", mmu, "pixels...")
+    cat(catTime(), "Apply MMU of", mmu, "pixels...\n")
     r_merge_mmu <- mapPatchMMU(name_merge, mmu = mmu, band = 1)
     name_mmu <- gsub("\\.tif", "_mmu.tif", name_merge)
     writeRaster(r_merge_mmu, name_mmu, options = c("COMPRESS=DEFLATE"), overwrite = T)

@@ -35,3 +35,4 @@ Collate:
     'judgeProbSeriesDetect.R'
     'mapDisturbanceL8S1.R'
     'mapPatchMMU.R'
+    'sample_data.R'

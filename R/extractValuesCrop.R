@@ -27,7 +27,7 @@ extractParallelCrop <- function(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7)
   dt_l8 <-
     foreach(i = 1:length(ls_l8), .packages = c("raster", "dplyr"), .combine = rbind) %dopar% {
       ### stack ---
-      stack_i <- stack(ls_l8[i])
+      stack_i <- stack(ls_l8[[i]])
       stack_crop <- crop(stack_i, e1)
       val_i <- getValues(stack_crop)
       ### tidy data ---

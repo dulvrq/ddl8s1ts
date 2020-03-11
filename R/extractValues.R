@@ -32,7 +32,7 @@ extractParallel <- function(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7)
   dt_l8 <-
     foreach(i = 1:length(ls_l8), .packages = c("raster", "dplyr"), .combine = rbind) %dopar% {
       ### stack ---
-      stack_i <- stack(ls_l8[i])
+      stack_i <- stack(ls_l8[[i]])
       val_i <- raster::extract(stack_i, dt_ref[,c("x", "y")])
       ### tidy data ---
       dt_use <- dt_ref %>%

@@ -1,7 +1,8 @@
 
 
 #' Calculate RMSE
-#'
+#' @param x x
+#' @param y y
 rmse <- function(x, y) sqrt(mean((x-y)^2, na.rm = T))
 
 

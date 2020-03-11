@@ -44,7 +44,26 @@ values should be `NA`, not 0 (sometimes occurred in GEE output). An
 exmaple of this product is the following.
 
 ``` r
-head(basename(ls_l8))
+# an example data in this package
+head(ls_l8, 1)
+#> [[1]]
+#> class      : RasterBrick 
+#> dimensions : 120, 120, 14400, 6  (nrow, ncol, ncell, nlayers)
+#> resolution : 30, 30  (x, y)
+#> extent     : 806880, 810480, 2144220, 2147820  (xmin, xmax, ymin, ymax)
+#> crs        : +proj=utm +zone=46 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#> source     : memory
+#> names      : LC08_L1TP//26_01_T1.1, LC08_L1TP//26_01_T1.2, LC08_L1TP//26_01_T1.3, LC08_L1TP//26_01_T1.4, LC08_L1TP//26_01_T1.5, LC08_L1TP//26_01_T1.6 
+#> min values :                    45,                   161,                    63,                   858,                   336,                   143 
+#> max values :                   646,                  1060,                  1312,                  4156,                  3197,                  2595
+```
+
+When you use your own data, it is also acceptable to use a filename
+provided by `list.files` as follows.
+
+``` r
+# use list.files to list files in your directory
+head(basename(list_l8))
 #> [1] "LC08_L1TP_132047_20140106_20170427_01_T1.tif"
 #> [2] "LC08_L1TP_132047_20140207_20170426_01_T1.tif"
 #> [3] "LC08_L1TP_132047_20140223_20170425_01_T1.tif"
@@ -61,7 +80,26 @@ These might be from GEE or other preprocessing chains. An exmaple of
 this product is the following.
 
 ``` r
-head(basename(ls_s1))
+# an example data in this package
+head(ls_s1, 1)
+#> [[1]]
+#> class      : RasterBrick 
+#> dimensions : 120, 120, 14400, 2  (nrow, ncol, ncell, nlayers)
+#> resolution : 30, 30  (x, y)
+#> extent     : 806880, 810480, 2144220, 2147820  (xmin, xmax, ymin, ymax)
+#> crs        : +proj=utm +zone=46 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0 
+#> source     : memory
+#> names      : S1A_IW_GRDH_1SDV_20141012T233201_20141012T233226_002803_003287_1E3D.1, S1A_IW_GRDH_1SDV_20141012T233201_20141012T233226_002803_003287_1E3D.2 
+#> min values :                                                                 -1104,                                                                 -1798 
+#> max values :                                                                   149,                                                                  -364
+```
+
+Of course you can use a filename provided by `list.files` in the same
+manner.
+
+``` r
+# use list.files to list files in your directory
+head(basename(list_s1))
 #> [1] "S1A_IW_GRDH_1SDV_20141012T233136_20141012T233201_002803_003287_0803.tif"
 #> [2] "S1A_IW_GRDH_1SDV_20141012T233136_20141012T233201_002803_003287_6FDB.tif"
 #> [3] "S1A_IW_GRDH_1SDV_20141012T233201_20141012T233226_002803_003287_1E3D.tif"
@@ -79,23 +117,25 @@ same order and length as `ls_s1`.
 
 ``` r
 # calculate julian day from filenames
+fname_l8 <- sapply(ls_l8, function(x) names(x)[1])
+fname_s1 <- sapply(ls_s1, function(x) names(x)[1])
 n <- 18
-l8_dates <- paste(substring(basename(ls_l8), n,   n+3),
-                  substring(basename(ls_l8), n+4, n+5),
-                  substring(basename(ls_l8), n+6, n+7), sep = "-")
-l8_doys <- as.numeric(substring(basename(ls_l8), n, n+3)) + as.numeric(strftime(l8_dates, format = "%j")) / 365
-s1_dates <- paste(substring(basename(ls_s1), n,   n+3),
-                  substring(basename(ls_s1), n+4, n+5),
-                  substring(basename(ls_s1), n+6, n+7), sep = "-")
-s1_doys <- as.numeric(substring(basename(ls_s1), n, n+3)) + as.numeric(strftime(s1_dates, format = "%j")) / 365
+l8_dates <- paste(substring(fname_l8, n,   n+3),
+                  substring(fname_l8, n+4, n+5),
+                  substring(fname_l8, n+6, n+7), sep = "-")
+l8_doys <- as.numeric(substring(fname_l8, n, n+3)) + as.numeric(strftime(l8_dates, format = "%j")) / 365
+s1_dates <- paste(substring(fname_s1, n,   n+3),
+                  substring(fname_s1, n+4, n+5),
+                  substring(fname_s1, n+6, n+7), sep = "-")
+s1_doys <- as.numeric(substring(fname_s1, n, n+3)) + as.numeric(strftime(s1_dates, format = "%j")) / 365
 
 head(l8_doys)
-#> [1] 2014.016 2014.104 2014.148 2014.192 2014.236 2014.279
+#> [1] 2014.036 2014.123 2014.167 2014.211 2014.255 2014.299
 head(s1_doys)
-#> [1] 2014.781 2014.781 2014.781 2014.781 2014.781 2014.781
+#> [1] 2014.781 2014.781 2014.847 2014.912 2014.978 2015.044
 ```
 
-**Refernce data for disturbance detection**
+**Reference data for disturbance detection**
 
 `dt_ref`: is a dataframe of reference data for RF modeling. This should
 contain column `x`, `y`, and `date`. `x` and `y` should indicate
@@ -104,15 +144,15 @@ Sentinel-1. `date` should indicate the timing of disturbance. If there
 is no disturbance at the sample location, use `NA`.
 
 ``` r
-# this is an example.
+# an example data in this package
 head(dt_ref)
 #>        x       y       date
-#> 1 783945 2179395 2016-01-31
-#> 2 817905 2154075 2016-09-17
-#> 3 838485 2147385 2016-03-23
-#> 4 829215 2135325 2016-03-07
-#> 5 778575 2121855 2016-10-07
-#> 6 848685 2117775 2016-11-01
+#> 1 807195 2144295 2017-03-26
+#> 2 806985 2147805 2017-02-22
+#> 3 809805 2145795 2016-03-08
+#> 4 809685 2146065 2016-01-03
+#> 5 809355 2147115 2016-03-08
+#> 6 809355 2146845 2016-03-24
 ```
 
 **Others**
@@ -129,7 +169,9 @@ list of two RF models.
 avoid `mmu`.  
 `only_rf`: If `TRUE`, only build RF models. If `FALSE`, build RF models
 and map disturbance detection.  
-`max_cores`: a maximum cores used for parallel processing.
+`max_cores`: a maximum cores used for parallel processing.  
+`threshold`: a threshold to detect disturbance from time series
+disturbance probabilities.
 
 ``` r
 ls_dem <- NULL # do not use DEM in RF models
@@ -138,7 +180,8 @@ startDOY <- 2016 # detect disturbance from 2016/01/01
 endDOY   <- 2018 # detect disturbance until 2017/12/31
 mmu      <- 4
 VI <- c("NBR", "TCA8", "TCB8", "TCG8","TCW8") # NBR, TCA, TCB, TCG, and TCW
-max_cores<- 20
+max_cores <- 20
+threshold <- 0.5
 ```
 
 #### example 1. Full implementation of building RF models and mapping disturbance
@@ -152,7 +195,7 @@ time.
 ``` r
 # use only_rf = F & rf_model = NULL to run entire process.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 #### example 2. Full implementation only with Landsat 8
@@ -163,7 +206,7 @@ either of file list.
 ``` r
 # use ls_s1 = NULL.
 mapDisturbanceL8S1(ls_l8, NULL, l8_doys, NULL, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 #### example 3. Implementation of RF modeling
@@ -175,7 +218,7 @@ then use `only_rf = TRUE`. This only generate RF models in a subfolder.
 ``` r
 # use only_rf = T.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = NULL, startDOY, endDOY, mmu, only_rf = T, max_cores)
+                   rf_model = NULL, startDOY, endDOY, mmu, only_rf = T, max_cores, threshold)
 ```
 
 #### example 4. Implementation of disturbance mapping
@@ -187,14 +230,14 @@ and Sentinel-1).
 ``` r
 # provide rf_model, a list of two RF models.
 mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
-                             rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F, max_cores)
+                   rf_model = rf_model, startDOY, endDOY, mmu, only_rf = F, max_cores, threshold)
 ```
 
 #### Other note:
 
   - It is a good idea to mask forest area before running this
     function.  
-  - A sub folder is automatically generated for saving RF results and
+  - A subfolder is automatically generated for saving RF results and
     temporally tiles of mapping.  
   - 50% of reference samples are used for RF modeling, and the rest are
     used for evaluation.
