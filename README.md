@@ -14,7 +14,7 @@ disturbance probability. Disturbance is detected based on the time
 series of disturbance probabilities predicted by Random Forests (RF).
 
   - The functions are tested only on Windows OS.
-  - The process takes very long time to map large area and uses much
+  - The process takes **very long time** to map large area and uses much
     memory and CPUs in parallel computing.
 
 ## Installation
@@ -33,6 +33,8 @@ package. All other functions are called by this function. Several data
 are required for running `mapDisturbanceL8S1()` to detect and map
 disturbance. The followings are key variables that should be prepared
 beforehand.
+
+    #> Warning: package 'raster' was built under R version 3.6.3
 
 **Landsat 8 data**
 
@@ -147,12 +149,12 @@ is no disturbance at the sample location, use `NA`.
 # an example data in this package
 head(dt_ref)
 #>        x       y       date
-#> 1 807195 2144295 2017-03-26
-#> 2 806985 2147805 2017-02-22
-#> 3 809805 2145795 2016-03-08
-#> 4 809685 2146065 2016-01-03
-#> 5 809355 2147115 2016-03-08
-#> 6 809355 2146845 2016-03-24
+#> 1 808395 2147145 2017-04-11
+#> 2 809445 2145585 2016-03-24
+#> 3 808695 2146605 2017-03-30
+#> 4 809235 2146335 2016-03-24
+#> 5 808335 2147325 2017-03-26
+#> 6 808875 2146995 2017-05-28
 ```
 
 **Others**
@@ -238,7 +240,7 @@ mapDisturbanceL8S1(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem, dir_save, VI,
   - It is a good idea to mask forest area before running this
     function.  
   - A subfolder is automatically generated for saving RF results and
-    temporally tiles of mapping.  
+    temporal tile maps.  
   - 50% of reference samples are used for RF modeling, and the rest are
     used for evaluation.
 
