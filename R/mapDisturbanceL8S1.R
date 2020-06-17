@@ -138,7 +138,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       cat(catTime(), " extract S1 reference data...")
       ## extract values from each image ---
       col_names_s1 <- c("VV", "VH")
-      if(nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
+      if(raster::nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
 
       dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = col_names_s1, max_cores)
 
@@ -300,7 +300,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       cat(catTime(), " extract values from S1 data...")
       ## extract values from each image --
       col_names_s1 <- c("VV", "VH")
-      if(nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
+      if(raster::nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
       dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = col_names_s1, max_cores)
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
