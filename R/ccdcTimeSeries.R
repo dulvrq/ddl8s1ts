@@ -235,7 +235,7 @@ ccdcTimeSeriesSAR <- function(values, VI = c("VV","VH"), startDOY = 2016, init_r
   #Values <- init_rirls(doys, Values, 1, strt-3, sub("[[:digit:]]+", "", VI))
 
   # estimate coef for initial sequence ---
-  for(k in 1:2){
+  for(k in 1:length(VI)){
     index <- VI[k]
     Values <- init_ccdc(doys, Values, index,
                         col_adj = dim(values)[2]+seq(4*(k-1)+1,4*(k-1)+4,1),

@@ -77,7 +77,8 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_l8)){
       cat(catTime(), " extract L8 reference data...")
       ## extract values from each image ---
-      dt_l8 <- extractParallel(ls_l8, l8_doys, dt_ref, col_names = paste0("B", 2:7), max_cores)
+      col_names_l8 <- paste0("B", 2:7)
+      dt_l8 <- extractParallel(ls_l8, l8_doys, dt_ref, col_names = col_names_l8, max_cores)
 
       # implement CCDC for each location (ID) ---
       cat(catTime(), " fit harmonic models to L8 reference data...")
@@ -136,7 +137,11 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_s1)){
       cat(catTime(), " extract S1 reference data...")
       ## extract values from each image ---
-      dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = c("VV", "VH"), max_cores)
+      col_names_s1 <- c("VV", "VH")
+      if(nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
+
+      dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = col_names_s1, max_cores)
+
 
       cat(catTime(), " fit harmonic models to S1 reference data...")
       # implement CCDC for each location (ID) ---
@@ -154,7 +159,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
           dt_s1_i <- dt_s1[dt_s1$ID == id_uniq[i],]
           if(dim(dt_s1_i)[1] < 12) return(NULL)
           ### CCDC ---
-          dt_s1_ccdc_i <- ccdcTimeSeriesSAR(dt_s1_i, VI = c("VV", "VH"), startDOY = startDOY, init_rirls,
+          dt_s1_ccdc_i <- ccdcTimeSeriesSAR(dt_s1_i, VI = col_names_s1, startDOY = startDOY, init_rirls,
                                             rirls, ccdc, init_ccdc, rmse)
           return(dt_s1_ccdc_i)
         }
@@ -170,7 +175,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
 
       # select cols used for RF model ---
-      index <- c("VV","VH")
+      index <- col_names_s1
       colUse_s1 <- c("manual",
                      paste0(rep(index, each = 4), paste0("_coef", 1:4)),
                      paste0(index, "_RMSE"),
@@ -236,7 +241,8 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_l8)){
       cat(catTime(), " extract values from L8 data...")
       ## extract values from each image --
-      dt_l8 <- extractParallelCrop(ls_l8, l8_doys, e1, col_names = paste0("B", 2:7), max_cores)
+      col_names_l8 <- paste0("B", 2:7)
+      dt_l8 <- extractParallelCrop(ls_l8, l8_doys, e1, col_names = col_names_l8, max_cores)
 
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_l8$ID))
@@ -293,7 +299,9 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
     if(!is.null(ls_s1)){
       cat(catTime(), " extract values from S1 data...")
       ## extract values from each image --
-      dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = c("VV", "VH"), max_cores)
+      col_names_s1 <- c("VV", "VH")
+      if(nlayers(stack(ls_s1[1])) == 1) col_names_s1 <- c("VV") # temporally. use VV if only 1 band available
+      dt_s1 <- extractParallelCrop(ls_s1, s1_doys, e1, col_names = col_names_s1, max_cores)
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
 
@@ -310,7 +318,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
           dt_s1_i <- dt_s1[dt_s1$ID == id_uniq[i],]
           if(dim(dt_s1_i)[1] < 12) return(NULL)
           ### CCDC ---
-          dt_s1_ccdc_i <- ccdcTimeSeriesSAR(dt_s1_i, VI = c("VV", "VH"), startDOY = startDOY, init_rirls,
+          dt_s1_ccdc_i <- ccdcTimeSeriesSAR(dt_s1_i, VI = col_names_s1, startDOY = startDOY, init_rirls,
                                             rirls, ccdc, init_ccdc, rmse)
           return(dt_s1_ccdc_i)
         }
@@ -331,7 +339,7 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       dt_s1_c <- dt_s1_c[complete.cases(dt_s1_c),]
 
       # select cols used for RF model ---
-      index <- c("VV","VH")
+      index <- col_names_s1
       colUse_s1 <- c(paste0(rep(index, each = 4), paste0("_coef", 1:4)),
                      paste0(index, "_RMSE"),
                      index)
