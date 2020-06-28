@@ -79,7 +79,9 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
       ## extract values from each image ---
       col_names_l8 <- paste0("B", 2:7)
       dt_l8 <- extractParallel(ls_l8, l8_doys, dt_ref, col_names = col_names_l8, max_cores)
-
+      cat(catTime(), " using L8 data of ", nrow(dt_l8), " rows ...")
+      
+      
       # implement CCDC for each location (ID) ---
       cat(catTime(), " fit harmonic models to L8 reference data...")
       ## IDs ---
@@ -142,7 +144,8 @@ mapDisturbanceL8S1 <- function(ls_l8, ls_s1, l8_doys, s1_doys, dt_ref, ls_dem = 
 
       dt_s1 <- extractParallel(ls_s1, s1_doys, dt_ref, col_names = col_names_s1, max_cores)
 
-
+      
+      cat(catTime(), " using S1 data of ", nrow(dt_s1), " rows ...")
       cat(catTime(), " fit harmonic models to S1 reference data...")
       # implement CCDC for each location (ID) ---
       id_uniq <- sort(unique(dt_s1$ID))
