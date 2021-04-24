@@ -151,7 +151,7 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
         geom_line(aes(y = predict, group = Sen, colour = Sen), size = 0.2) +
         geom_point(aes(y = predict, colour = Sen), size = 2) +
         geom_vline(xintercept = DisDate, colour = "blue", linetype = "dashed") +
-        scale_x_continuous(breaks = seq(2016, 2018, 0.5), limits = c(2016, 2018)) +
+        #scale_x_continuous(breaks = seq(2016, 2018, 0.5), limits = c(2016, 2018)) +
         scale_y_continuous(breaks = seq(0, 1, 0.25), limits = c(0, 1)) +
         ggtitle(paste0("ID: ", id_use[id_i])) +
         xlab("Year") + ylab("Disturbance probability") +
