@@ -143,7 +143,8 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
 
 
     ### plot disturbance prob for S1 & L8 (optional)---
-    if(!is.null(savename)){
+
+    if(!is.null(savename) & !is.null(dt_l8_use) & !is.null(dt_s1_use)){
       if(i == 1) pdf(savename, width = 8, height = 6)
       ggplot + theme_set(theme_bw(base_size = 12))
 
@@ -151,10 +152,30 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
         geom_line(aes(y = predict_mix), colour = "grey70", size = 2) +
         geom_line(aes(y = predict, group = Sen, colour = Sen), size = 0.2) +
         geom_point(aes(y = predict, colour = Sen), size = 2) +
-        geom_vline(xintercept = DisDate, colour = "blue", linetype = "dashed") +
         #scale_x_continuous(breaks = seq(2016, 2018, 0.5), limits = c(2016, 2018)) +
         scale_y_continuous(breaks = seq(0, 1, 0.25), limits = c(0, 1)) +
-        ggtitle(paste0("ID: ", id_use[id_i])) +
+        ggtitle(paste0("ID: ", id_i)) +
+        xlab("Year") + ylab("Disturbance probability") +
+        theme(plot.title = element_text(hjust = 0.5))
+
+      print(a)
+
+      if(i == length(ids)) dev.off()
+    }
+
+    if(!is.null(savename) & (is.null(dt_l8_use) | is.null(dt_s1_use))){
+      if(i == 1) pdf(savename, width = 8, height = 6)
+      ggplot + theme_set(theme_bw(base_size = 12))
+
+      if(exists("dt_temp_l8")) dt_temp_l8s1o <- dt_temp_l8
+      if(exists("dt_temp_s1")) dt_temp_l8s1o <- dt_temp_s1
+
+      a <- ggplot(dt_temp_l8s1o, aes(x = DOY)) +
+        geom_line(aes(y = predict), colour = "grey70", size = 2) +
+        geom_point(aes(y = predict), size = 2) +
+        #scale_x_continuous(breaks = seq(2016, 2018, 0.5), limits = c(2016, 2018)) +
+        scale_y_continuous(breaks = seq(0, 1, 0.25), limits = c(0, 1)) +
+        ggtitle(paste0("ID: ", id_i)) +
         xlab("Year") + ylab("Disturbance probability") +
         theme(plot.title = element_text(hjust = 0.5))
 
