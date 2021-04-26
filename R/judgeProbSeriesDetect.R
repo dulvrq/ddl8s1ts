@@ -1,4 +1,5 @@
 
+
 #' detect consective anomalies---
 #'
 #' @param x a vector of logical.
@@ -142,6 +143,7 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
 
 
     ### plot disturbance prob for S1 & L8 (optional)---
+
     if(!is.null(savename) & !is.null(dt_l8_use) & !is.null(dt_s1_use)){
       if(i == 1) pdf(savename, width = 8, height = 6)
       ggplot + theme_set(theme_bw(base_size = 12))
@@ -188,4 +190,5 @@ judgeProbSeriesDetect <- function(dt_l8_use, dt_s1_use, ids,
 
   return(res_judge)
 }
+
 
